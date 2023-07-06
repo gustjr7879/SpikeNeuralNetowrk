@@ -65,14 +65,15 @@ class SpikeNeuralNet(nn.Module):
         # init hidden states at t = 0
         mem1 = self.lif1.init_leaky()
         mem2 = self.lif2.init_leaky()
-
         #record
         mem_rec = []
         spk_rec = []
 
         for step in range(num_steps):
             cur1 = self.fc1(x)
+            #print(cur1[0])
             spk1,mem1 = self.lif1(cur1,mem1)
+            #print(spk1[0][1])
             #print(spk1,spk1.shape)
             cur2 = self.fc2(spk1)
             spk2,mem2 = self.lif2(cur2,mem2)
@@ -80,7 +81,6 @@ class SpikeNeuralNet(nn.Module):
             #exit()
             spk_rec.append(spk2)
             mem_rec.append(mem2)
-
         return torch.stack(spk_rec,dim=0), torch.stack(mem_rec,dim=0)
     
 model = SpikeNeuralNet().to(device)
